@@ -10,13 +10,15 @@
 #include <avr/io.h>
 #define F_CPU 16000000UL
 #include <util/delay.h>
-
+#include "driver/terminal.h"
 
 #define DDR_STATUS_LED		DDRD
 #define PORT_STATUS_LED		PORTD
 #define STATUS_LED			PIND7
 
 volatile unsigned char sendData = 0; 
+
+
 
 void send(unsigned char data)
 {
@@ -37,10 +39,30 @@ void sendstr (unsigned char *s)
 		send(*s++);	
 }
 
-void init() 
+void hello(uint8_t number);
+void initUART();
+void init();
+
+
+uint8_t globalValue = 0;
+
+int main(void)
 {
-	DDR_STATUS_LED |= (1<<STATUS_LED);
-	PORT_STATUS_LED |= (1<<STATUS_LED);
+	stdout = &mystdout;
+		init();
+		initUART();
+	
+	while(1)
+	{
+		hello(globalValue++);
+		_delay_ms(10);
+		globalValue = (globalValue==256)?0:globalValue;
+	}
+}
+
+void hello(uint8_t number) {
+	//printf("Hello!!!!\n");
+	printf("Value = %d\n", number);
 }
 
 void initUART()
@@ -50,21 +72,14 @@ void initUART()
 	
 	UBRRH = 0x00;
 	UBRRL = 0x67;
-    UCSRB |=(1<<RXEN)|(1<<TXEN)|(1<<RXCIE);
+	UCSRB |=(1<<RXEN)|(1<<TXEN)|(1<<RXCIE);
 	UCSRC |=(1<<URSEL)|(1<<UCSZ0)|(1<<UCSZ1);
-	
 }
 
-int main(void)
+void init()
 {
-	while(1)
-	{
-	init();
-	initUART();
-	sendstr("good_luck");
-	//sfdgsgsggf
-	}
-	
+	DDR_STATUS_LED |= (1<<STATUS_LED);
+	PORT_STATUS_LED |= (1<<STATUS_LED);
 }
 
 
