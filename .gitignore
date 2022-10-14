@@ -1,5 +1,3 @@
 .vs/
-*.atsln
 kuasy/Debug/
 *.xml
-*.cproj
