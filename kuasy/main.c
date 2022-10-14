@@ -62,6 +62,7 @@ int main(void)
 	init();
 	initUART();
 	sendstr("good_luck");
+	//sfdgsgsggf
 	}
 	
 }
