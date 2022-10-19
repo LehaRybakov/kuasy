@@ -8,10 +8,12 @@
 
 
 
-#include <stdio.h>
+
 #include <avr/io.h>
 #define F_CPU 16000000UL
 #include <util/delay.h>
+
+#include <stdio.h>
 
 
 #define DDR_STATUS_LED		DDRD
@@ -21,33 +23,42 @@
 volatile unsigned char sendData = 0; 
 
 
-void hello(uint8_t number) {
-	//printf("Hello!!!!\n");
-	printf("Value = %d\n", number);
-}
 
+void init();
+void initUART();
+static int send(char c, FILE *stream);
 
+static FILE uart = FDEV_SETUP_STREAM(send, NULL, _FDEV_SETUP_WRITE);
 
-void send(unsigned char data)
+int main(void)
 {
-	while(!(UCSRA&(1<<UDRE)));
-	UDR = data;
+	stdout = &uart;
+
+	initUART();
+	printf("Start program\n");
+	
+	init();
+	printf("Led status ON\n");
+	
+	while(1)
+	{
+		
+		
+	}	
 }
 
-void sendString (unsigned char str[], int length) {
-	for (int i = 0; i < length; i++)
-	{	
-		send(str[i]);
+static int send(char c, FILE *stream) {
+	if (c == '\n')
+		send('\r', stream);
+	
+	while(!(UCSRA&(1<<UDRE))){
+		
 	}
+	UDR = c;
+	return 0;
 }
 
-void sendstr (unsigned char *s)
-{
-	while (*s != 0)
-		send(*s++);	
-}
-
-void init() 
+void init()
 {
 	DDR_STATUS_LED |= (1<<STATUS_LED);
 	PORT_STATUS_LED |= (1<<STATUS_LED);
@@ -60,30 +71,7 @@ void initUART()
 	
 	UBRRH = 0x00;
 	UBRRL = 0x67;
-    UCSRB |=(1<<RXEN)|(1<<TXEN)|(1<<RXCIE);
+	UCSRB |=(1<<RXEN)|(1<<TXEN)|(1<<RXCIE);
 	UCSRC |=(1<<URSEL)|(1<<UCSZ0)|(1<<UCSZ1);
 	
 }
-
-int main(void)
-{
-	init();
-	initUART();
-	
-	
-	while(1)
-	{
-	//sendstr("goodluck");
-	printf ("1. Вывод простой строки\n");
-	return 0;
-	
-	
-	
-	}
-	
-	
-
-	
-}
-
-
