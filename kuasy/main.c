@@ -7,6 +7,8 @@
 
 
 
+
+#include <stdio.h>
 #include <avr/io.h>
 #define F_CPU 16000000UL
 #include <util/delay.h>
@@ -17,6 +19,14 @@
 #define STATUS_LED			PIND7
 
 volatile unsigned char sendData = 0; 
+
+
+void hello(uint8_t number) {
+	//printf("Hello!!!!\n");
+	printf("Value = %d\n", number);
+}
+
+
 
 void send(unsigned char data)
 {
@@ -57,13 +67,22 @@ void initUART()
 
 int main(void)
 {
-	while(1)
-	{
 	init();
 	initUART();
-	sendstr("goodluck");
+	
+	
+	while(1)
+	{
+	//sendstr("goodluck");
+	printf ("1. Вывод простой строки\n");
+	return 0;
+	
+	
 	
 	}
+	
+	
+
 	
 }
 
